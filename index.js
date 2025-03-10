@@ -9,45 +9,45 @@ server.use(express.json());
 
 //CRUD> create, Read, Update, Delete
 
-const cursos = ["Node.js", "Javascript", "React", "Cypress", "Java", "Flutter", "html"];
+const cursos = ["Node.js", "Javascript", "React", "Cypress", "Java", "Flutter", "html",];
 
 //Middleware Global
 server.use((req, res, next) => {
-    console.log(`URL CHAMADA ${req.url}`);
+  console.log(`URL CHAMADA ${req.url}`);
 
-    return next();
-  });
+  return next();
+});
 
-  function checkCurso(req, res, next){
-    if(!req.body.name){
-        return res.status(400).json({ error: "Nome do curso é obrigatorio"})
-    }
-
-    return next();
+function checkCurso(req, res, next) {
+  if (!req.body.name) {
+    return res.status(400).json({ error: "Nome do curso é obrigatorio" });
   }
 
-  function checkIndexCurso(req, res, next){
-  const curso = cursos[req.params.index]
-  if(!curso){
-    return res.status(400).json({ error: "O curso não existe"})
+  return next();
 }
 
-req.curso = curso
-
-    return next();
+function checkIndexCurso(req, res, next) {
+  const curso = cursos[req.params.index];
+  if (!curso) {
+    return res.status(400).json({ error: "O curso não existe" });
   }
+
+  req.curso = curso;
+
+  return next();
+}
 
 server.get("/cursos", (req, res) => {
   return res.json(cursos);
 });
 
 //localhost:3002/curso
-server.get("/cursos/:index",checkIndexCurso, (req, res) => {
+server.get("/cursos/:index", checkIndexCurso, (req, res) => {
   return res.json(req.curso);
 });
 
 //Criando um novo curso
-server.post("/cursos",checkCurso, (req, res) => {
+server.post("/cursos", checkCurso, (req, res) => {
   const { name } = req.body;
   cursos.push(name);
 
@@ -55,21 +55,21 @@ server.post("/cursos",checkCurso, (req, res) => {
 });
 
 //Atualizando um curso
-server.put("/cursos/:index",checkCurso, checkIndexCurso, (req, res) => {
+server.put("/cursos/:index", checkCurso, checkIndexCurso, (req, res) => {
   const { index } = req.params;
-  const{name} = req.body
+  const { name } = req.body;
 
-  cursos[index] = name
-  
-  return res.json(cursos)
+  cursos[index] = name;
+
+  return res.json(cursos);
 });
 
 //Deletando algum cursos
-server.delete("/cursos/:index",checkIndexCurso, (req, res) => {
-    const { index } = req.params
+server.delete("/cursos/:index", checkIndexCurso, (req, res) => {
+  const { index } = req.params;
 
-    cursos.splice(index, 1)
-    return res.send()
-  });
+  cursos.splice(index, 1);
+  return res.send();
+});
 
 server.listen(3000);
